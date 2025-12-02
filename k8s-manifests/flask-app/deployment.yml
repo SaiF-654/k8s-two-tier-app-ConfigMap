@@ -4,7 +4,7 @@ metadata:
   name: flask-deployment
   namespace: flask-app
 spec:
-  replicas: 1
+  replicas: 2  # Better to have at least 2 for availability
   selector:
     matchLabels:
       app: flask
@@ -18,9 +18,29 @@ spec:
         image: saifrehman123/two-tier:v3
         ports:
         - containerPort: 5000
-        envFrom:
-          - secretRef:
-              name: mysql-secret
-          - configMapRef:
+        env:
+        # MySQL connection details
+        - name: MYSQL_HOST
+          value: "mysql-service.mysql-db.svc.cluster.local"
+        - name: MYSQL_DB
+          valueFrom:
+            configMapKeyRef:
               name: mysql-config
-
+              namespace: mysql-db  # Cross-namespace reference
+              key: MYSQL_DATABASE
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-config
+              namespace: mysql-db
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              namespace: mysql-db  # Cross-namespace reference
+              key: MYSQL_PASSWORD
+        - name: FLASK_ENV
+          value: "production"
