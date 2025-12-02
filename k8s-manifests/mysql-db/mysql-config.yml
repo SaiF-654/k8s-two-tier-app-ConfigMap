@@ -6,8 +6,8 @@ metadata:
   name: mysql-config
   namespace: mysql-db
 data:
-  MYSQL_DATABASE: "two_tier_db"  # Changed from "mysql"
-  MYSQL_USER: "appuser"
+  MYSQL_DATABASE: "two_tier_db"
+  MYSQL_USER: "appuser"          # ← ADD THIS LINE (missing in your app)
   MYSQL_CHARSET: "utf8mb4"
 ---
 # Secret for sensitive MySQL data
@@ -19,4 +19,4 @@ metadata:
 type: Opaque
 stringData:
   MYSQL_ROOT_PASSWORD: "admin"
-  MYSQL_PASSWORD: "apppassword"  # Added for app user
+  MYSQL_PASSWORD: "apppassword"  # ← Your app expects this as password
