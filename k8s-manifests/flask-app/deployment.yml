@@ -4,7 +4,7 @@ metadata:
   name: flask-deployment
   namespace: flask-app
 spec:
-  replicas: 2  # Better to have at least 2 for availability
+  replicas: 2
   selector:
     matchLabels:
       app: flask
@@ -19,28 +19,26 @@ spec:
         ports:
         - containerPort: 5000
         env:
-        # MySQL connection details
+        # EXACT environment variables your app.py is looking for:
         - name: MYSQL_HOST
           value: "mysql-service.mysql-db.svc.cluster.local"
-        - name: MYSQL_DB
-          valueFrom:
-            configMapKeyRef:
-              name: mysql-config
-              namespace: mysql-db  # Cross-namespace reference
-              key: MYSQL_DATABASE
-        - name: MYSQL_PORT
-          value: "3306"
         - name: MYSQL_USER
           valueFrom:
             configMapKeyRef:
               name: mysql-config
               namespace: mysql-db
-              key: MYSQL_USER
+              key: MYSQL_USER        # ← This maps to "appuser"
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mysql-secret
-              namespace: mysql-db  # Cross-namespace reference
-              key: MYSQL_PASSWORD
-        - name: FLASK_ENV
-          value: "production"
+              namespace: mysql-db
+              key: MYSQL_PASSWORD    # ← This maps to "apppassword"
+        - name: MYSQL_DB
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-config
+              namespace: mysql-db
+              key: MYSQL_DATABASE    # ← This maps to "two_tier_db"
+        - name: MYSQL_PORT
+          value: "3306"
