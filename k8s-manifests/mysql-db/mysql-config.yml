@@ -1,0 +1,22 @@
+---
+# ConfigMap for non-sensitive MySQL configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: mysql-db
+data:
+  MYSQL_DATABASE: "two_tier_db"  # Changed from "mysql"
+  MYSQL_USER: "appuser"
+  MYSQL_CHARSET: "utf8mb4"
+---
+# Secret for sensitive MySQL data
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  namespace: mysql-db
+type: Opaque
+stringData:
+  MYSQL_ROOT_PASSWORD: "admin"
+  MYSQL_PASSWORD: "apppassword"  # Added for app user
