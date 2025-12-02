@@ -4,11 +4,10 @@ metadata:
   name: flask-service
   namespace: flask-app
 spec:
+  type: NodePort  # Changed from ClusterIP to access from browser
   selector:
     app: flask
   ports:
-    - port: 5000
-      targetPort: 5000
-      nodePort: 30007
-  type: NodePort
-
+  - port: 5000
+    targetPort: 5000
+    nodePort: 30007  # Kubernetes will assign if not specified
