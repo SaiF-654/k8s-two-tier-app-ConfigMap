@@ -4,7 +4,7 @@ metadata:
   name: flask-deployment
   namespace: flask-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: flask
@@ -19,26 +19,13 @@ spec:
         ports:
         - containerPort: 5000
         env:
-        # EXACT environment variables your app.py is looking for:
         - name: MYSQL_HOST
           value: "mysql-service.mysql-db.svc.cluster.local"
         - name: MYSQL_USER
-          valueFrom:
-            configMapKeyRef:
-              name: mysql-config
-              namespace: mysql-db
-              key: MYSQL_USER        # ← This maps to "appuser"
+          value: "appuser"
         - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secret
-              namespace: mysql-db
-              key: MYSQL_PASSWORD    # ← This maps to "apppassword"
+          value: "apppassword"
         - name: MYSQL_DB
-          valueFrom:
-            configMapKeyRef:
-              name: mysql-config
-              namespace: mysql-db
-              key: MYSQL_DATABASE    # ← This maps to "two_tier_db"
+          value: "two_iter_db"  # ← MUST match exactly!
         - name: MYSQL_PORT
           value: "3306"
